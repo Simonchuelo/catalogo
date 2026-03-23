@@ -1,0 +1,154 @@
+:root {
+    --bg-primary: #0b0c10;
+    --bg-secondary: #1f2833;
+    --accent-neon: #66fcf1;
+    --text-primary: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* --- HEADER --- */
+header {
+    display: flex; justify-content: space-between; align-items: center; padding: 15px 5%;
+    background: rgba(11,12,16,0.95); border-bottom: 2px solid var(--accent-neon);
+    position: sticky; top: 0; z-index: 100;
+}
+.logo span { color: var(--accent-neon); text-shadow: 0 0 10px var(--accent-neon); font-family: 'Orbitron'; }
+.header-actions { display: flex; align-items: center; gap: 15px; }
+
+.btn-whatsapp {
+    background: #25d366; color: white; border: none; padding: 8px 18px;
+    border-radius: 20px; font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer; 
+    transition: 0.3s; display: flex; align-items: center; gap: 8px;
+}
+.btn-whatsapp:hover { transform: scale(1.05); box-shadow: 0 0 15px #25d366; }
+
+/* Estrella del Header (Contador) */
+.fav-indicator { color: #ffde00; font-family: 'Orbitron'; font-size: 1.2rem; display: flex; align-items: center; gap: 5px; }
+
+/* --- GRIDS --- */
+.consolas-grid, .juegos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 20px 5%; }
+
+/* --- TARJETAS --- */
+.consola-card, .juego-card { 
+    background: var(--bg-secondary); border-radius: 12px; overflow: hidden; 
+    border: 1px solid rgba(102, 252, 241, 0.1); transition: 0.3s; position: relative; cursor: pointer;
+}
+.consola-card:hover, .juego-card:hover { transform: translateY(-5px); border-color: var(--accent-neon); box-shadow: 0 5px 15px rgba(102, 252, 241, 0.2); }
+
+.juego-portada { width: 100%; aspect-ratio: 2 / 3; overflow: hidden; background: #000; position: relative; }
+.juego-portada img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- ESTRELLAS DE FAVORITOS EN LAS TARJETAS (RESTAURADAS) --- */
+.btn-fav {
+    position: absolute; 
+    top: 10px; 
+    right: 10px; 
+    background: rgba(0,0,0,0.6); 
+    color: rgba(255, 255, 255, 0.5); 
+    border: 1px solid rgba(255,255,255,0.2); 
+    width: 35px; 
+    height: 35px; 
+    border-radius: 50%; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.btn-fav i { font-size: 1.1rem; }
+
+.btn-fav.active { 
+    color: #ffde00; 
+    background: rgba(0,0,0,0.8);
+    border-color: #ffde00;
+    text-shadow: 0 0 10px #ffde00;
+}
+
+.btn-fav:hover { transform: scale(1.1); background: rgba(0,0,0,0.9); color: #ffde00; }
+
+/* --- FOOTER --- */
+.main-footer {
+    background-color: var(--bg-secondary); border-top: 2px solid var(--accent-neon);
+    padding: 40px 5%; margin-top: 60px; text-align: center;
+}
+.cafecito-central { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+.cafecito-leyenda { color: #888; font-size: 1rem; }
+.btn-cafecito-footer {
+    display: flex; align-items: center; gap: 10px; background: rgba(255, 129, 51, 0.1);
+    color: #ff8133; border: 2px solid #ff8133; padding: 12px 25px; border-radius: 5px;
+    font-family: 'Orbitron'; text-decoration: none; text-transform: uppercase; transition: 0.3s;
+}
+.btn-cafecito-footer:hover { background: #ff8133; color: #fff; box-shadow: 0 0 20px #ff8133; }
+
+/* Loader */
+#loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-primary); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.neon-spinner { width: 40px; height: 40px; border: 3px solid transparent; border-top: 3px solid var(--accent-neon); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Hero & Filtros */
+.hero { text-align: center; padding: 60px 5%; }
+.hero h1 { font-family: 'Orbitron'; font-size: 2.5rem; color: var(--accent-neon); margin-bottom: 10px; }
+.filtros-container { display: flex; gap: 15px; margin: 20px 5%; align-items: center; }
+.search-box { flex-grow: 1; position: relative; }
+.search-box input { width: 100%; padding: 12px 45px; background: #000; border: 1px solid var(--accent-neon); color: #fff; border-radius: 5px; outline: none; }
+.search-box i { position: absolute; left: 15px; top: 14px; color: var(--accent-neon); }
+
+/* Botón Volver */
+.btn-secundario { background: transparent; color: var(--accent-neon); border: 2px solid var(--accent-neon); padding: 8px 20px; font-family: 'Orbitron'; cursor: pointer; border-radius: 4px; transition: 0.3s; }
+.btn-secundario:hover { background: var(--accent-neon); color: var(--bg-primary); }
+
+@media (max-width: 480px) {
+    .btn-whatsapp span { display: none; }
+}
+/* --- ESTILOS PARA LAS NUEVAS ACCIONES DEL HEADER --- */
+
+.header-msg {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    color: var(--accent-neon);
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    max-width: 200px;
+    text-align: right;
+    line-height: 1.1;
+}
+
+.btn-borrar-fav {
+    background: rgba(255, 0, 85, 0.1);
+    color: #ff0055;
+    border: 1px solid #ff0055;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.btn-borrar-fav:hover {
+    background: #ff0055;
+    color: white;
+    box-shadow: 0 0 15px #ff0055;
+    transform: rotate(15deg);
+}
+
+/* Ajuste para móviles: ocultar el texto largo para que no se amontone todo */
+@media (max-width: 768px) {
+    .header-msg {
+        display: none;
+    }
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroVault - Catálogo Gamer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="loader-wrapper">
+        <div class="loader-content">
+            <div class="neon-spinner"></div>
+            <p>INICIANDO SISTEMA...</p>
+        </div>
+    </div>
+
+    <header>
+    <div class="logo" id="logo-inicio" style="cursor:pointer">
+        <i class="fa-solid fa-gamepad"></i> RETRO<span>VAULT</span>
+    </div>
+    <div class="header-actions">
+        <span class="header-msg">Elegí tus favoritos y envialo para instalar</span>
+        
+        <button onclick="enviarFavoritosWhatsApp()" class="btn-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i> <span>Pedir</span>
+        </button>
+
+        <button onclick="borrarTodosFavoritos()" class="btn-borrar-fav" title="Borrar todos los favoritos">
+            <i class="fa-solid fa-trash-can"></i>
+        </button>
+
+        <div class="fav-indicator">
+            <i class="fa-solid fa-star"></i> <span id="fav-count">0</span>
+        </div>
+    </div>
+</header>
+
+    <main>
+        <section id="vista-home">
+            <div class="hero">
+                <h1>BIBLIOTECA VIRTUAL</h1>
+                <p>Selecciona una plataforma para explorar los títulos disponibles.</p>
+            </div>
+            <div class="consolas-grid" id="consolas-container"></div>
+        </section>
+
+        <section id="vista-catalogo" style="display: none;">
+            <div class="breadcrumb">
+                <button id="btn-volver" class="btn-secundario"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                <h2 id="titulo-consola">Consola</h2>
+            </div>
+
+            <div class="filtros-container">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="input-busqueda" placeholder="Buscar por nombre...">
+                </div>
+                <div class="dropdowns">
+                    <select id="ordenar-por">
+                        <option value="nombre-asc">Orden A-Z</option>
+                        <option value="anio-desc">Nuevos Primero</option>
+                    </select>
+                </div>
+            </div>
+            <div class="juegos-grid" id="juegos-container"></div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="cafecito-central">
+            <p class="cafecito-leyenda">¿Te gustó nuestra web? Ayudanos a mantenerla online.</p>
+            <a href="https://cafecito.app/TU_USUARIO" target="_blank" class="btn-cafecito-footer">
+                <i class="fa-solid fa-mug-hot"></i> Invitame un Cafecito
+            </a>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
