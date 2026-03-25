@@ -8,180 +8,255 @@ from unicodedata import normalize
 from urllib.parse import urlparse
 
 # ==========================================
-# 1. CONFIGURACIÓN Y HEADERS
+# CONFIG
 # ==========================================
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0"
 }
 
 # ==========================================
-# 2. FUNCIONES DE UTILIDAD
+# UTILIDADES
 # ==========================================
 def limpiar_nombre_archivo(nombre):
-    """Sanea el nombre del juego para usarlo como nombre de archivo."""
     nombre = normalize('NFKD', nombre).encode('ascii', 'ignore').decode('ascii')
     nombre = re.sub(r'[^\w\s-]', '', nombre).strip().lower()
     return re.sub(r'[-\s]+', '_', nombre)
 
 def crear_carpetas_consola(nombre_consola):
-    """Crea la estructura de carpetas: assets/images/[consola]"""
-    ruta_base = os.path.join("assets", "images", nombre_consola.lower())
-    if not os.path.exists(ruta_base):
-        os.makedirs(ruta_base, exist_ok=True)
-        print(f"📁 Carpeta verificada/creada: {ruta_base}")
-    return ruta_base
+    ruta = os.path.join("assets", "images", nombre_consola.lower())
+    os.makedirs(ruta, exist_ok=True)
+    return ruta
 
-def descargar_imagen_local(url_imagen, ruta_carpeta, nombre_juego):
-    """Descarga la imagen y devuelve la ruta relativa para el JSON."""
+def descargar_imagen_local(url_imagen, carpeta, nombre):
     if not url_imagen:
         return "assets/images/no_image.png"
 
-    path_url = urlparse(url_imagen).path
-    ext = os.path.splitext(path_url)[1]
-    if not ext or len(ext) > 5: ext = ".jpg"
+    ext = os.path.splitext(urlparse(url_imagen).path)[1]
+    if not ext or len(ext) > 5:
+        ext = ".jpg"
 
-    nombre_archivo = f"{limpiar_nombre_archivo(nombre_juego)}{ext}"
-    ruta_completa_archivo = os.path.join(ruta_carpeta, nombre_archivo)
-    ruta_relativa_frontend = ruta_completa_archivo.replace("\\", "/")
+    archivo = f"{limpiar_nombre_archivo(nombre)}{ext}"
+    ruta = os.path.join(carpeta, archivo)
 
-    if os.path.exists(ruta_completa_archivo):
-        return ruta_relativa_frontend
+    if os.path.exists(ruta):
+        return ruta.replace("\\", "/")
 
     try:
-        res = requests.get(url_imagen, headers=HEADERS, timeout=15)
-        if res.status_code == 200:
-            with open(ruta_completa_archivo, 'wb') as f:
-                f.write(res.content)
-            return ruta_relativa_frontend
+        r = requests.get(url_imagen, headers=HEADERS, timeout=10)
+        if r.status_code == 200:
+            with open(ruta, "wb") as f:
+                f.write(r.content)
+            return ruta.replace("\\", "/")
     except:
         pass
+
     return "assets/images/no_image.png"
 
 # ==========================================
-# 3. LÓGICA DE SCRAPEO
+# SCRAPER NORMAL
 # ==========================================
-def ejecutar_scrapeo(url_entrada, consola_key, max_paginas=1):
-    """Extrae datos de la web, descarga imágenes y genera lista de juegos."""
-    
-    url_limpia = url_entrada.rstrip("/")
-    if "/page/" in url_limpia:
-        url_base = url_limpia.split("/page/")[0] + "/page/"
-    else:
-        url_base = url_limpia + "/page/"
+def ejecutar_scrapeo(url, consola, max_paginas=1):
+    base = url.rstrip("/") + "/page/"
+    carpeta = crear_carpetas_consola(consola)
 
-    ruta_imagenes = crear_carpetas_consola(consola_key)
-    juegos_scrapedados = []
-    
-    for pagina in range(1, max_paginas + 1):
-        print(f"\n--- 📄 Extrayendo Página {pagina} de {max_paginas} ---")
-        url_actual = f"{url_base}{pagina}/"
-        
+    juegos = []
+
+    for p in range(1, max_paginas + 1):
+        print(f"\n📄 Página {p}")
+
         try:
-            res = requests.get(url_actual, headers=HEADERS, timeout=15)
-            if res.status_code != 200: 
-                print(f"⚠️ Fin de páginas o error (Status: {res.status_code})")
+            r = requests.get(base + str(p), headers=HEADERS, timeout=10)
+            if r.status_code != 200:
                 break
-            
-            soup = BeautifulSoup(res.text, 'html.parser')
-            articulos = soup.select('article') or soup.select('.post-column') or soup.select('.item-list') or soup.find_all('div', class_=re.compile(r'post|entry|item'))
 
-            if not articulos:
-                print("⚠️ No se encontraron elementos de juego en esta página.")
-                continue
+            soup = BeautifulSoup(r.text, "html.parser")
+            articulos = soup.find_all("article")
 
             for art in articulos:
-                titulo_tag = art.find('h2') or art.find('h3') or art.find('a', class_='post-title')
-                img_tag = art.find('img')
-                
-                if titulo_tag and img_tag:
-                    nombre_sucio = titulo_tag.get_text().strip()
-                    if len(nombre_sucio) < 3: continue 
+                titulo = art.find("h2")
+                img = art.find("img")
 
-                    # Limpieza del título (Añadidas las nuevas plataformas al Regex)
-                    regex_limpieza = r'(PS3|PSP|PSVITA|VITA|WIIU|WII U|ISO|FREE DOWNLOAD|USA|EUR|JPN|FULL PKG|PSN|Rpcs3|PS2|PCSX2|WII|SWITCH|XBOX360|3DS)'
-                    nombre_limpio = re.sub(regex_limpieza, '', nombre_sucio, flags=re.IGNORECASE).strip()
-                    nombre_limpio = re.sub(r'[-–()] +$', '', nombre_limpio).strip()
+                if not titulo or not img:
+                    continue
 
-                    url_img_src = img_tag.get('data-src') or img_tag.get('data-lazy-src') or img_tag.get('src')
-                    
-                    if url_img_src:
-                        if url_img_src.startswith('//'):
-                            url_img_src = 'https:' + url_img_src
-                        
-                        print(f"🎮 Procesando: {nombre_limpio}")
-                        ruta_local_img = descargar_imagen_local(url_img_src, ruta_imagenes, nombre_limpio)
+                nombre = titulo.get_text().strip()
 
-                        juego = {
-                            "id": f"{consola_key.lower()}_{limpiar_nombre_archivo(nombre_limpio)[:15]}",
-                            "nombre": nombre_limpio,
-                            "anio": 2010,
-                            "genero": "Acción / Aventura",
-                            "imagen": ruta_local_img,
-                            "descripcion": f"Juego de {consola_key} extraído automáticamente."
-                        }
-                        juegos_scrapedados.append(juego)
-            
-            time.sleep(2)
-            
+                if any(j["nombre"].lower() == nombre.lower() for j in juegos):
+                    continue
+
+                url_img = img.get("src")
+                ruta_img = descargar_imagen_local(url_img, carpeta, nombre)
+
+                juegos.append({
+                    "id": f"{consola.lower()}_{limpiar_nombre_archivo(nombre)}",
+                    "nombre": nombre,
+                    "anio": 2010,
+                    "genero": "Acción",
+                    "imagen": ruta_img,
+                    "descripcion": f"Juego de {consola}"
+                })
+
+            time.sleep(1)
+
         except Exception as e:
-            print(f"❌ Error en página {pagina}: {e}")
+            print("❌ Error:", e)
             break
 
-    return juegos_scrapedados
+    return juegos
 
 # ==========================================
-# 4. INTERFAZ DE USUARIO
+# SCRAPER PRO PS1 (PUSHSQUARE)
+# ==========================================
+def scrapear_ps1_pushsquare_pro(url, consola, max_paginas=1):
+    carpeta = crear_carpetas_consola(consola)
+    juegos = []
+    base_url = "https://www.pushsquare.com"
+
+    for p in range(1, max_paginas + 1):
+        url_actual = f"{url.split('&page=')[0]}&page={p}"
+        print(f"\n🔥 PS1 Página {p}")
+
+        try:
+            r = requests.get(url_actual, headers=HEADERS, timeout=10)
+            if r.status_code != 200:
+                break
+
+            soup = BeautifulSoup(r.text, "html.parser")
+
+            links = soup.select("a[href^='/games/']")
+
+            for link in links:
+                nombre = link.get_text(strip=True)
+                href = link.get("href")
+
+                if not nombre or len(nombre) < 2:
+                    continue
+
+                if any(j["nombre"].lower() == nombre.lower() for j in juegos):
+                    continue
+
+                url_juego = base_url + href
+                print(f"🎮 {nombre}")
+
+                try:
+                    r2 = requests.get(url_juego, headers=HEADERS, timeout=10)
+                    soup2 = BeautifulSoup(r2.text, "html.parser")
+
+                    # =========================
+                    # IMAGEN (PRO)
+                    # =========================
+                    url_img = None
+
+                    # 1. Open Graph
+                    meta_img = soup2.find("meta", property="og:image")
+                    if meta_img:
+                        url_img = meta_img.get("content")
+
+                    # 2. Figure
+                    if not url_img:
+                        img_tag = soup2.select_one("figure img")
+                        if img_tag:
+                            url_img = img_tag.get("src")
+
+                    # 3. Fallback
+                    if not url_img:
+                        img_tag = soup2.find("img")
+                        if img_tag:
+                            url_img = img_tag.get("data-src") or img_tag.get("src")
+
+                    if url_img and url_img.startswith("//"):
+                        url_img = "https:" + url_img
+
+                    if not url_img:
+                        print(f"❌ Sin imagen: {nombre}")
+
+                    ruta_img = descargar_imagen_local(url_img, carpeta, nombre)
+
+                    # =========================
+                    # AÑO
+                    # =========================
+                    texto = soup2.get_text()
+                    match = re.search(r'(19\d{2}|20\d{2})', texto)
+                    anio = int(match.group(0)) if match else 1995
+
+                    juegos.append({
+                        "id": f"{consola.lower()}_{limpiar_nombre_archivo(nombre)[:20]}",
+                        "nombre": nombre,
+                        "anio": anio,
+                        "genero": "Desconocido",
+                        "imagen": ruta_img,
+                        "descripcion": f"Juego de {consola} (PushSquare)"
+                    })
+
+                    time.sleep(1)
+
+                except Exception as e:
+                    print(f"⚠️ Error juego: {e}")
+                    continue
+
+            time.sleep(1)
+
+        except Exception as e:
+            print(f"❌ Error página: {e}")
+            break
+
+    return juegos
+
+# ==========================================
+# MENÚ
 # ==========================================
 def Menu_Interactivo():
-    print("\n==========================================")
-    print("🚀 SCRAPER DE VIDEOJUEGOS PROFESIONAL 🚀")
-    print("==========================================\n")
+    print("\n🚀 SCRAPER VIDEOJUEGOS 🚀\n")
 
-    # Lista de consolas actualizada
     consolas = ["PS1", "PS2", "PS3", "PSP", "PSVITA", "Wii", "WIIU", "Switch", "DS", "Xbox360"]
-    
-    for i, con in enumerate(consolas, 1):
-        print(f"{i}. {con}")
-    
+
+    for i, c in enumerate(consolas, 1):
+        print(f"{i}. {c}")
+
     try:
-        sel = int(input("\n👉 Selecciona el número de consola: "))
-        consola_elegida = consolas[sel - 1]
+        sel = int(input("\n👉 Consola: "))
+        consola = consolas[sel - 1]
     except:
-        print("❌ Selección no válida.")
+        print("❌ Error")
         return
 
-    url_input = input(f"🔗 Pega el link de la categoría de {consola_elegida}: ").strip()
-    if not url_input.startswith("http"):
-        print("❌ URL no válida.")
-        return
+    url = input("🔗 URL: ").strip()
 
     try:
-        pags = int(input("📄 ¿Cuántas páginas quieres procesar?: "))
+        pags = int(input("📄 Páginas: ") or 1)
     except:
         pags = 1
 
-    resultados = ejecutar_scrapeo(url_input, consola_elegida, pags)
-
-    if resultados:
-        archivo_json = 'juegos.json'
-        datos_totales = {}
-
-        if os.path.exists(archivo_json):
-            with open(archivo_json, 'r', encoding='utf-8') as f:
-                try: 
-                    datos_totales = json.load(f)
-                except: 
-                    datos_totales = {}
-
-        # Actualizamos solo la consola elegida en el JSON
-        datos_totales[consola_elegida] = resultados
-
-        with open(archivo_json, 'w', encoding='utf-8') as f:
-            json.dump(datos_totales, f, indent=4, ensure_ascii=False)
-
-        print(f"\n✅ ¡LISTO! {len(resultados)} juegos guardados en 'juegos.json' para {consola_elegida}.")
+    # 🔥 DETECCIÓN INTELIGENTE
+    if consola.upper() == "PS1" and "pushsquare.com" in url:
+        resultados = scrapear_ps1_pushsquare_pro(url, consola, pags)
     else:
-        print("\n❌ No se extrajo nada. Verifica la URL.")
+        resultados = ejecutar_scrapeo(url, consola, pags)
 
+    if not resultados:
+        print("❌ No se extrajo nada")
+        return
+
+    archivo = "juegos.json"
+    datos = {}
+
+    if os.path.exists(archivo):
+        with open(archivo, "r", encoding="utf-8") as f:
+            try:
+                datos = json.load(f)
+            except:
+                datos = {}
+
+    existentes = datos.get(consola, [])
+    datos[consola] = existentes + resultados
+
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(datos, f, indent=4, ensure_ascii=False)
+
+    print(f"\n✅ {len(resultados)} juegos agregados a {consola}")
+
+# ==========================================
+# MAIN
+# ==========================================
 if __name__ == "__main__":
     Menu_Interactivo()
