@@ -14,15 +14,15 @@ sonidoCoin.volume = 0.4;
 // --- BASE DE DATOS DE CONSOLAS ---
 const baseDeDatosConsolas = [
     { id: "ps1", nombre: "PlayStation 1", imagen: "assets/images/ps1/default.jpg" },
-    { id: "PS2", nombre: "PlayStation 2", imagen: "assets/images/ps2/default.jpg" },
-    { id: "PS3", nombre: "PlayStation 3", imagen: "assets/images/ps3/default.jpg" },
-    { id: "PSP", nombre: "PlayStation Portable", imagen: "assets/images/psp/default.jpg" },
-    { id: "PSVITA", nombre: "PlayStation Vita", imagen: "assets/images/psvita/default.jpg" },
-    { id: "Wii", nombre: "Wii", imagen: "assets/images/wii/default.jpg" },
-    { id: "WIIU", nombre: "Nintendo Wii U", imagen: "assets/images/wiiu/default.jpg" },
+    { id: "ps2", nombre: "PlayStation 2", imagen: "assets/images/ps2/default.jpg" },
+    { id: "ps3", nombre: "PlayStation 3", imagen: "assets/images/ps3/default.jpg" },
+    { id: "psp", nombre: "PlayStation Portable", imagen: "assets/images/psp/default.jpg" },
+    { id: "psvita", nombre: "PlayStation Vita", imagen: "assets/images/psvita/default.jpg" },
+    { id: "wii", nombre: "Wii", imagen: "assets/images/wii/default.jpg" },
+    { id: "wiiu", nombre: "Nintendo Wii U", imagen: "assets/images/wiiu/default.jpg" },
     { id: "switch", nombre: "Switch", imagen: "assets/images/switch/default.jpg" },
-    { id: "DS", nombre: "3DS / 2DS", imagen: "assets/images/ds/default.jpg" },
-    { id: "Xbox360", nombre: "Xbox 360", imagen: "assets/images/xbox360/default.jpg" }
+    { id: "ds", nombre: "3DS / 2DS", imagen: "assets/images/ds/default.jpg" },
+    { id: "xbox360", nombre: "Xbox 360", imagen: "assets/images/xbox360/default.jpg" }
 ];
 
 // --- CARGA INICIAL DE DATOS ---
@@ -32,7 +32,11 @@ async function cargarDatos() {
         const res = await fetch('juegos.json');
         if (!res.ok) throw new Error("Archivo juegos.json no encontrado");
         
-        baseDeDatosJuegos = await res.json();
+        const rawData = await res.json();
+        baseDeDatosJuegos = {};
+        Object.keys(rawData).forEach(key => {
+            baseDeDatosJuegos[key.toLowerCase()] = rawData[key];
+        });
         
         setTimeout(() => {
             if (loader) loader.style.display = 'none';
@@ -62,7 +66,7 @@ function renderizarConsolas() {
         div.setAttribute('data-id', c.id);
         div.innerHTML = `
             <div class="card-img-container" style="height:150px; overflow:hidden;">
-                <img src="${c.imagen}" style="width:100%; height:100%; object-fit:cover;" 
+                <img src="${c.imagen}" style="width:100%; height:100%; object-fit:cover;" loading="lazy" decoding="async"
                      onerror="this.src='https://via.placeholder.com/300x200?text=${c.id}'">
             </div>
             <h3 style="padding:15px; text-align:center; font-family:'Orbitron'">${c.nombre} (${totalJuegos})</h3>
@@ -111,7 +115,7 @@ function renderizarJuegos() {
         div.className = 'juego-card';
         div.innerHTML = `
             <div class="juego-portada${sinImagen ? ' sin-imagen' : ''}">
-                ${!sinImagen ? `<img src="${j.imagen}" alt="${j.nombre}" loading="lazy"
+                ${!sinImagen ? `<img src="${j.imagen}" alt="${j.nombre}" loading="lazy" decoding="async"
                      onerror="this.onerror=null; this.style.display='none'; this.closest('.juego-portada').classList.add('sin-imagen');">` : ''}
                 <div class="placeholder-img"><i class="fa-solid fa-gamepad"></i><span>${j.nombre}</span></div>
                 <button class="btn-fav ${esFav ? 'active' : ''}" onclick="toggleFavorito(event, '${j.nombre.replace(/'/g, "\\'")}')">

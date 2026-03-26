@@ -35,7 +35,8 @@ header {
 .fav-indicator { color: #ffde00; font-family: 'Orbitron'; font-size: 1.2rem; display: flex; align-items: center; gap: 5px; }
 
 /* --- GRIDS --- */
-.consolas-grid, .juegos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 20px 5%; }
+.consolas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 20px 5%; }
+.juegos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; padding: 20px 5%; }
 
 /* --- TARJETAS --- */
 .consola-card, .juego-card { 
@@ -46,6 +47,47 @@ header {
 
 .juego-portada { width: 100%; aspect-ratio: 2 / 3; overflow: hidden; background: #000; position: relative; }
 .juego-portada img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Placeholder cuando la imagen no existe */
+.placeholder-img {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    padding: 20px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 5;
+}
+.placeholder-img i {
+    font-size: 2.5rem;
+    color: var(--accent-neon);
+    opacity: 0.6;
+    text-shadow: 0 0 15px var(--accent-neon);
+}
+.placeholder-img span {
+    font-size: 0.8rem;
+    color: var(--accent-neon);
+    opacity: 0.8;
+    font-family: 'Rajdhani', sans-serif;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-clamp: 3;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+/* Cuando se activa la clase sin-imagen, mostrar el placeholder */
+.juego-portada.sin-imagen .placeholder-img { opacity: 1; pointer-events: auto; }
+.juego-portada.sin-imagen > img { visibility: hidden; pointer-events: none; }
 
 /* --- ESTRELLAS DE FAVORITOS EN LAS TARJETAS (RESTAURADAS) --- */
 .btn-fav {
@@ -108,10 +150,53 @@ header {
 .btn-secundario { background: transparent; color: var(--accent-neon); border: 2px solid var(--accent-neon); padding: 8px 20px; font-family: 'Orbitron'; cursor: pointer; border-radius: 4px; transition: 0.3s; }
 .btn-secundario:hover { background: var(--accent-neon); color: var(--bg-primary); }
 
-@media (max-width: 480px) {
-    .btn-whatsapp span { display: none; }
+/* --- INFORMACIÓN DEL JUEGO --- */
+.juego-info { padding: 10px; }
+.juego-titulo { font-size: 0.9rem; margin-bottom: 5px; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.juego-anio { font-size: 0.75rem; color: var(--accent-neon); }
+
+/* --- RESPONSIVIDAD --- */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 900px) {
+    .header-msg { display: none; }
+    .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 10px 3%; }
+    .juegos-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 10px 3%; }
+    .hero h1 { font-size: 2rem; }
+    .juego-titulo { font-size: 0.8rem; }
+    .juego-anio { font-size: 0.7rem; }
+    .btn-fav { width: 30px; height: 30px; top: 5px; right: 5px; }
+    .btn-fav i { font-size: 0.9rem; }
 }
-/* --- ESTILOS PARA LAS NUEVAS ACCIONES DEL HEADER --- */
+
+/* Teléfonos móviles y tablets pequeñas */
+@media (max-width: 600px) {
+    header { padding: 10px 3%; }
+    .header-actions { gap: 8px; }
+    .logo { font-size: 1.1rem; }
+    .btn-whatsapp { padding: 6px 12px; }
+    .btn-whatsapp span { display: none; }
+    
+    .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 10px 2%; }
+    .juegos-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; padding: 10px 2%; }
+    
+    .juego-info { padding: 6px; }
+    .juego-titulo { font-size: 0.7rem; margin-bottom: 2px; }
+    .juego-anio { font-size: 0.6rem; }
+    
+    .hero { padding: 30px 5%; }
+    .hero h1 { font-size: 1.5rem; }
+    .hero p { font-size: 0.9rem; }
+
+    .filtros-container { flex-direction: column; align-items: stretch; margin: 10px 2%; }
+    .dropdowns select { width: 100%; padding: 10px; }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 350px) {
+    .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    .juegos-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+}
 
 .header-msg {
     font-family: 'Rajdhani', sans-serif;
@@ -142,13 +227,4 @@ header {
 .btn-borrar-fav:hover {
     background: #ff0055;
     color: white;
-    box-shadow: 0 0 15px #ff0055;
-    transform: rotate(15deg);
-}
-
-/* Ajuste para móviles: ocultar el texto largo para que no se amontone todo */
-@media (max-width: 768px) {
-    .header-msg {
-        display: none;
-    }
 }
