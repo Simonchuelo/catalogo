@@ -1,5 +1,5 @@
 {
-    "PS2": [
+    "ps2": [
         {
             "id": "ps2_virtual_view_ne",
             "nombre": "Virtual View Nemoto Harumi Eyes Play",
@@ -32201,7 +32201,7 @@
             "descripcion": "Juego de PS2 extraído automáticamente."
         }
     ],
-    "PS3": [
+    "ps3": [
         {
             "id": "ps3_just_dance_unli",
             "nombre": "Just Dance Unlimited",
@@ -58835,7 +58835,7 @@
             "descripcion": "Juego de PS3 extraído automáticamente."
         }
     ],
-    "Wii": [
+    "wii": [
         {
             "id": "wii_shakedown_hawai",
             "nombre": "Shakedown Hawaii",
@@ -67885,7 +67885,7 @@
             "descripcion": "Juego de Wii extraído automáticamente."
         }
     ],
-    "DS": [
+    "ds": [
         {
             "id": "ds_kirbys_extra_ep",
             "nombre": "Kirbys Extra Epic Yarn",
@@ -74039,7 +74039,7 @@
             "descripcion": "Juego de DS extraído automáticamente."
         }
     ],
-    "Xbox360": [
+    "xbox360": [
         {
             "id": "xbox360_just_dance_2019",
             "nombre": "Just Dance 2019 [Region Free][]",
@@ -85377,7 +85377,7 @@
             "descripcion": "Juego de Xbox360 extraído automáticamente."
         }
     ],
-    "PSP": [
+    "psp": [
         {
             "id": "psp_dragon_ball_z_s",
             "nombre": "Dragon Ball Z Shin Budokai Another Road",
@@ -101955,7 +101955,7 @@
             "descripcion": "Juego de PSP extraído automáticamente."
         }
     ],
-    "PSVITA": [
+    "psvita": [
         {
             "id": "psvita_fifa_19_mod_fin",
             "nombre": "FIFA 19 Mod Final",
@@ -110405,9 +110405,7 @@
             "descripcion": "Juego de PSVITA extraído automáticamente."
         }
     ],
-    "xbox360": [],
-    "ps2": [],
-    "WIIU": [
+    "wiiu": [
         {
             "id": "wiiu_fast_racing_neo",
             "nombre": "Fast Racing NEO",
