@@ -13,14 +13,14 @@ sonidoCoin.volume = 0.4;
 
 // --- BASE DE DATOS DE CONSOLAS ---
 const baseDeDatosConsolas = [
-    { id: "PS1", nombre: "PlayStation 1", imagen: "assets/images/ps1/default.jpg" },
+    { id: "ps1", nombre: "PlayStation 1", imagen: "assets/images/ps1/default.jpg" },
     { id: "PS2", nombre: "PlayStation 2", imagen: "assets/images/ps2/default.jpg" },
     { id: "PS3", nombre: "PlayStation 3", imagen: "assets/images/ps3/default.jpg" },
     { id: "PSP", nombre: "PlayStation Portable", imagen: "assets/images/psp/default.jpg" },
     { id: "PSVITA", nombre: "PlayStation Vita", imagen: "assets/images/psvita/default.jpg" },
     { id: "Wii", nombre: "Wii", imagen: "assets/images/wii/default.jpg" },
     { id: "WIIU", nombre: "Nintendo Wii U", imagen: "assets/images/wiiu/default.jpg" },
-    { id: "Switch", nombre: "Switch", imagen: "assets/images/switch/default.jpg" },
+    { id: "switch", nombre: "Switch", imagen: "assets/images/switch/default.jpg" },
     { id: "DS", nombre: "3DS / 2DS", imagen: "assets/images/ds/default.jpg" },
     { id: "Xbox360", nombre: "Xbox 360", imagen: "assets/images/xbox360/default.jpg" }
 ];
@@ -106,18 +106,21 @@ function renderizarJuegos() {
 
     juegos.forEach(j => {
         const esFav = listaFavoritos.some(fav => fav.nombre === j.nombre);
+        const sinImagen = !j.imagen || j.imagen === 'assets/images/no_image.png';
         const div = document.createElement('div');
         div.className = 'juego-card';
         div.innerHTML = `
-            <div class="juego-portada">
-                <img src="${j.imagen}" alt="${j.nombre}" loading="lazy">
+            <div class="juego-portada${sinImagen ? ' sin-imagen' : ''}">
+                ${!sinImagen ? `<img src="${j.imagen}" alt="${j.nombre}" loading="lazy"
+                     onerror="this.onerror=null; this.style.display='none'; this.closest('.juego-portada').classList.add('sin-imagen');">` : ''}
+                <div class="placeholder-img"><i class="fa-solid fa-gamepad"></i><span>${j.nombre}</span></div>
                 <button class="btn-fav ${esFav ? 'active' : ''}" onclick="toggleFavorito(event, '${j.nombre.replace(/'/g, "\\'")}')">
                     <i class="fa-solid fa-star"></i>
                 </button>
             </div>
-            <div style="padding:10px;">
-                <h4 style="font-size:0.9rem; margin-bottom:5px;">${j.nombre}</h4>
-                <p style="font-size:0.75rem; color:var(--accent-neon)">${j.anio || 'Retro'}</p>
+            <div class="juego-info">
+                <h4 class="juego-titulo">${j.nombre}</h4>
+                <p class="juego-anio">${j.anio || 'Retro'}</p>
             </div>
         `;
         container.appendChild(div);
