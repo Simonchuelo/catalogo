@@ -36,13 +36,14 @@ header {
 
 /* --- GRIDS --- */
 .consolas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 20px 5%; }
-.juegos-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 20px 5%; }
+.juegos-grid { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px 5%; }
 
 /* --- TARJETAS --- */
 .consola-card, .juego-card { 
     background: var(--bg-secondary); border-radius: 12px; overflow: hidden; 
     border: 1px solid rgba(102, 252, 241, 0.1); transition: 0.3s; position: relative; cursor: pointer;
 }
+.juego-card { width: calc(20% - 16px); }
 .consola-card:hover, .juego-card:hover { transform: translateY(-5px); border-color: var(--accent-neon); box-shadow: 0 5px 15px rgba(102, 252, 241, 0.2); }
 
 .juego-portada { width: 100%; aspect-ratio: 2 / 3; overflow: hidden; background: #000; position: relative; }
@@ -161,7 +162,8 @@ header {
 @media (max-width: 900px) {
     .header-msg { display: none; }
     .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 10px 3%; }
-    .juegos-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px 3%; }
+    .juegos-grid { gap: 10px; padding: 10px 3%; }
+    .juego-card { width: calc(25% - 7.5px); }
     .hero h1 { font-size: 2rem; }
     .juego-titulo { font-size: 0.8rem; }
     .juego-anio { font-size: 0.7rem; }
@@ -178,7 +180,8 @@ header {
     .btn-whatsapp span { display: none; }
     
     .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 10px 2%; }
-    .juegos-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px 2%; }
+    .juegos-grid { gap: 8px; padding: 10px 2%; }
+    .juego-card { width: calc(25% - 6px); }
     
     .juego-info { padding: 6px; }
     .juego-titulo { font-size: 0.7rem; margin-bottom: 2px; }
@@ -195,7 +198,7 @@ header {
 /* Pantallas muy pequeñas */
 @media (max-width: 350px) {
     .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-    .juegos-grid { grid-template-columns: repeat(3, 1fr); }
+    .juego-card { width: calc(33.333% - 5.33px); }
 }
 
 .header-msg {
