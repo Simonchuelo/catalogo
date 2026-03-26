@@ -36,7 +36,7 @@ header {
 
 /* --- GRIDS --- */
 .consolas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 20px 5%; }
-.juegos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; padding: 20px 5%; }
+.juegos-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 20px 5%; }
 
 /* --- TARJETAS --- */
 .consola-card, .juego-card { 
@@ -161,7 +161,7 @@ header {
 @media (max-width: 900px) {
     .header-msg { display: none; }
     .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 10px 3%; }
-    .juegos-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 10px 3%; }
+    .juegos-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px 3%; }
     .hero h1 { font-size: 2rem; }
     .juego-titulo { font-size: 0.8rem; }
     .juego-anio { font-size: 0.7rem; }
@@ -178,7 +178,7 @@ header {
     .btn-whatsapp span { display: none; }
     
     .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 10px 2%; }
-    .juegos-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; padding: 10px 2%; }
+    .juegos-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px 2%; }
     
     .juego-info { padding: 6px; }
     .juego-titulo { font-size: 0.7rem; margin-bottom: 2px; }
@@ -195,7 +195,7 @@ header {
 /* Pantallas muy pequeñas */
 @media (max-width: 350px) {
     .consolas-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-    .juegos-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+    .juegos-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 .header-msg {

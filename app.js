@@ -66,7 +66,7 @@ function renderizarConsolas() {
         div.setAttribute('data-id', c.id);
         div.innerHTML = `
             <div class="card-img-container" style="height:150px; overflow:hidden;">
-                <img src="${c.imagen}" style="width:100%; height:100%; object-fit:cover;" loading="lazy" decoding="async"
+                <img src="${c.imagen}" style="width:100%; height:100%; object-fit:cover;" loading="lazy"
                      onerror="this.src='https://via.placeholder.com/300x200?text=${c.id}'">
             </div>
             <h3 style="padding:15px; text-align:center; font-family:'Orbitron'">${c.nombre} (${totalJuegos})</h3>
@@ -115,7 +115,7 @@ function renderizarJuegos() {
         div.className = 'juego-card';
         div.innerHTML = `
             <div class="juego-portada${sinImagen ? ' sin-imagen' : ''}">
-                ${!sinImagen ? `<img src="${j.imagen}" alt="${j.nombre}" loading="lazy" decoding="async"
+                ${!sinImagen ? `<img src="${j.imagen}" alt="${j.nombre}" loading="lazy"
                      onerror="this.onerror=null; this.style.display='none'; this.closest('.juego-portada').classList.add('sin-imagen');">` : ''}
                 <div class="placeholder-img"><i class="fa-solid fa-gamepad"></i><span>${j.nombre}</span></div>
                 <button class="btn-fav ${esFav ? 'active' : ''}" onclick="toggleFavorito(event, '${j.nombre.replace(/'/g, "\\'")}')">
